@@ -1,0 +1,75 @@
+import React, { useState, useEffect } from 'react';
+
+import './App.css';
+
+import { Customer } from './model/customer';
+import { entityManagerProvider } from './breeze/entity-manager-provider';
+import { EntityQuery } from 'breeze-client';
+
+// import {
+//   BrowserRouter as Router,
+//   Switch,
+//   Route,
+//   Link,
+  
+// } from "react-router-dom";
+import { CustomerEditor } from './CustomerEditor';
+
+
+
+const App = () => {
+  const [customers, setCustomers ] = useState([] as Customer[]);
+  const [searchName, setSearchName] = useState('C');
+
+  const entityManager = entityManagerProvider.newManager();
+  const executeQuery = async (searchName: string) => {
+    const query = new EntityQuery("Customers").where("lastName", "startsWith", searchName).expand("orders");
+    const qr = await entityManager.executeQuery(query);
+    setCustomers(qr.results);
+  }
+
+  useEffect( () => {
+    executeQuery(searchName);
+  }, [searchName]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchName(val);
+  }
+
+  return (
+    <Router>
+      <div className="App">
+        <label>
+          Search for Last Name starting with:
+          <input type="text" value={searchName} onChange={handleChange} />
+        </label>
+
+        <h1>Customers</h1>
+        
+        <table style={{margin: 'auto'}}>
+          <tbody>
+            {customers.map(cust =>
+              <tr key={cust.id}>
+                <td>{cust.firstName} {cust.lastName}</td>
+                <td>{cust.entityAspect.entityState.name}</td>
+                <td>{cust.orders.length} Orders</td>
+                <td>
+                  <Link to="/customer/{cust.id}">Edit</Link>
+                </td>
+              </tr>)
+            }
+          </tbody>
+        </table>
+      </div>
+      <Switch>
+        <Route path="/customer/:id" >
+          <CustomerEditor />
+        </Route>
+      </Switch>
+    </Router>
+
+  );
+}
+
+export default App;
