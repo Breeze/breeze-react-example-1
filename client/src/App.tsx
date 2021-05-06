@@ -4,7 +4,7 @@ import './App.css';
 
 import { Customer } from './model/customer';
 import { entityManagerProvider } from './breeze/entity-manager-provider';
-import { EntityAction, EntityQuery } from 'breeze-client';
+import { EntityQuery, EntityState } from 'breeze-client';
 import { CustomerEditor } from './CustomerEditor';
 import { useEntityManager } from './utils/useEntityManager';
 
@@ -12,32 +12,20 @@ const App = () => {
   const [customers, setCustomers ] = useState([] as Customer[]);
   const [searchName, setSearchName] = useState('C');
   const [currentCust, setCurrentCust] = useState<Customer | null>(null);
-
-  const entityManager = entityManagerProvider.newManager();
-  const executeQuery = async (searchName: string) => {
-    const query = new EntityQuery("Customers").where("lastName", "startsWith", searchName).expand("orders");
-    const qr = await entityManager.executeQuery(query);
-    setCustomers(qr.results);
-  }
-
+  
+  const [entityManager, setEntityManager] = useState(entityManagerProvider.newManager());
+  
   useEffect( () => {
     executeQuery(searchName);
   }, [searchName]);
 
   useEntityManager(entityManager);
 
-  // useEffect( () => {
-  //   const subid = entityManager.entityChanged.subscribe((data: { entityAction: EntityAction }) => {
-  //     if (data.entityAction === EntityAction.PropertyChange || data.entityAction === EntityAction.EntityStateChange) {
-  //       forceUpdate()
-  //     }
-  //   });
-  //   return () => {
-  //     entityManager.entityChanged.unsubscribe(subid);
-  //   };
-  // }, []);
-
-  // const forceUpdate = React.useReducer(() => ({}), {})[1] as () => void;
+  const executeQuery = async (searchName: string) => {
+    const query = new EntityQuery("Customers").where("lastName", "startsWith", searchName).expand("orders");
+    const qr = await entityManager.executeQuery(query);
+    setCustomers(qr.results);
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -50,18 +38,27 @@ const App = () => {
     setCurrentCust(cust);
   }
 
+  const addCustomer = () => {
+    const cust = entityManager.createEntity(Customer.prototype.entityType, EntityState.Added) as Customer;
+    // cust.id = -1;
+    // select the new customer, and add it to the list of customers
+    setCustomers([...customers, cust]);
+    setCurrentCust(cust);
+  }
 
   return (
     
-    <div className="App">
-      <label>
-        Search for Last Name starting with:
-        <input type="text" value={searchName} onChange={handleChange} />
-      </label>
-
-      <h1>Customers</h1>
-      
-      <table style={{margin: 'auto'}}>
+    <div className="App container">
+      <div className="mt-3">
+        <label>
+          Search for customers with a last name starting with: &nbsp;
+          <input type="text" value={searchName} onChange={handleChange} />
+        </label>
+        <span> or </span>
+        <button onClick= {addCustomer}>Add Customer</button>
+      </div>
+      <h1>Customers</h1> 
+      <table className="ml-3">
         <tbody>
           {customers.map((cust, ix) =>
             <tr key={cust.id} onClick={() => selectRow(ix)} className={ currentCust === cust ? 'selected' : '' }>
