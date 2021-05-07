@@ -1,9 +1,7 @@
-import { EntityAction, EntityChangedEventArgs, EntityManager } from "breeze-client";
+import { Entity, EntityAction, EntityChangedEventArgs, EntityManager, PropertyChangedEventArgs } from "breeze-client";
 import { useEffect, useReducer } from "react";
 
 export const useEntityManager = (entityManager: EntityManager) => {
-
-  
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
   useEffect( () => {
@@ -21,4 +19,18 @@ export const useEntityManager = (entityManager: EntityManager) => {
   }, []);
 };
 
-// export const forceUpdate = React.useReducer(() => ({}), {})[1] as () => void;
+export const useEntity = (entity: Entity) => {
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  useEffect( () => {
+    console.log('subscribe to EntityManager')
+    const subid = entity.entityAspect.propertyChanged.subscribe( (_data: PropertyChangedEventArgs ) => {
+        forceUpdate()
+    });
+    return () => {
+      console.log('unsubscribe from EntityManager')
+      entity.entityAspect.propertyChanged.unsubscribe(subid);
+    };
+  }, []);
+};
+

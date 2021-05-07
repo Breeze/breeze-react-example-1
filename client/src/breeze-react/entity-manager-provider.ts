@@ -3,6 +3,7 @@ import { AjaxFetchAdapter } from "breeze-client/adapter-ajax-fetch";
 import { DataServiceWebApiAdapter } from "breeze-client/adapter-data-service-webapi";
 import { ModelLibraryBackingStoreAdapter } from "breeze-client/adapter-model-library-backing-store";
 import { UriBuilderJsonAdapter } from "breeze-client/adapter-uri-builder-json";
+import { createContext } from "react";
 
 import { NorthwindMetadata } from "../model/metadata";
 import { NorthwindRegistrationHelper } from "../model/registration-helper";
@@ -56,3 +57,5 @@ export class EntityManagerProvider {
 }
 
 export const entityManagerProvider = new EntityManagerProvider();
+
+export const EntityManagerContext = createContext<EntityManager>(entityManagerProvider.newManager());

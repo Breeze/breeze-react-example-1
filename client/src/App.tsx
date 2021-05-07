@@ -1,18 +1,16 @@
 
-import { EntityManager } from 'breeze-client';
-import { createContext, useState } from 'react';
-import './App.css';
-import { entityManagerProvider } from './breeze/entity-manager-provider';
-import { CustomerList } from './CustomerList';
+import React, { useState } from 'react';
+import { EntityManagerContext, entityManagerProvider } from './breeze-react/entity-manager-provider';
+import { CustomerManager } from './CustomerManager';
 
-export const EntityManagerContext = createContext<EntityManager>(entityManagerProvider.newManager());
+import './App.css';
 
 const App = () => {
   const [entityManager, setEntityManager] = useState(entityManagerProvider.newManager());
 
   return (
     <EntityManagerContext.Provider value={entityManager}>
-      <CustomerList />
+      <CustomerManager />
     </EntityManagerContext.Provider>
   );
 }

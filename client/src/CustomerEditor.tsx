@@ -14,8 +14,6 @@ export const CustomerEditor = (props: { customer: Customer  }) => {
 
   return ( 
     <div >
-      <h1>Customer</h1>
-      
       <div className="row mt-1">
         <label className="col-md-1">First Name</label>
         <input className="col-md-4" name="firstName" value={customer.firstName || ''} onChange={handleChange}  />  
