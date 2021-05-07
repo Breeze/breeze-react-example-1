@@ -1,11 +1,15 @@
-
+import { Include  } from './utils/Include';
 import { Customer } from './model/customer';
 
-export const CustomerList = (props: { customers: Customer[], currentCust: Customer | null, selectCust: (cust: Customer) => void } ) => {
-  const { customers, currentCust, selectCust } = props;
+export const CustomerList = (props: { 
+  customers: Customer[], 
+  currentCust: Customer | null, 
+  selectCust: (cust: Customer) => void 
+  undoCust: (cust: Customer) => void 
+} ) => {
+  const { customers, currentCust, selectCust, undoCust } = props;
 
   return (
-
     <table className="ml-3">
       <tbody>
         {customers.map((cust) =>
@@ -14,11 +18,14 @@ export const CustomerList = (props: { customers: Customer[], currentCust: Custom
             <td>{cust.city}</td>
             <td>{cust.orders.length} Orders</td>
             <td>{cust.entityAspect.entityState.name}</td>
+            <td>
+              <Include when={cust.entityAspect.entityState.isAddedModifiedOrDeleted()} >
+                <button onClick={ () => undoCust(cust)}>Cancel Changes</button>
+              </Include>
+            </td>
           </tr>)
         }
       </tbody>
     </table>
-
-
   );
 }
