@@ -8,7 +8,7 @@ export const useEntityManager = (entityManager: EntityManager) => {
     console.log('subscribe to EntityManager')
     const subid = entityManager.entityChanged.subscribe( (data: EntityChangedEventArgs ) => {
       if (data.entityAction === EntityAction.PropertyChange || data.entityAction === EntityAction.EntityStateChange) {
-        console.log('Use-Action: ' + data.entityAction);
+        // console.log('Use-Action: ' + data.entityAction);
         forceUpdate()
       }
     });

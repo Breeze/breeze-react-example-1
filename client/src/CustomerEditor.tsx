@@ -5,7 +5,7 @@ import { Input } from "./utils/Input";
 export const CustomerEditor = (props: { customer: Customer  }) => {
   const customer = props.customer;
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
     const prop = e.target.name;
     (customer as any)[prop] = val;

@@ -38,22 +38,6 @@ export class EntityManagerProvider {
     return this.masterManager.createEmptyCopy();
   }
 
-  // /** Call forceUpdate() on the component when an entity property or state changes */
-  // subscribeComponent(manager: EntityManager, component: { forceUpdate: () => void }) {
-  //   let subid = manager.entityChanged.subscribe((data: { entityAction: EntityAction }) => {
-  //     if (data.entityAction === EntityAction.PropertyChange || data.entityAction === EntityAction.EntityStateChange) {
-  //       component.forceUpdate();
-  //     }
-  //   });
-  //   component["subid"] = subid;
-  // }
-
-  // /** Remove subscription created with subscribeComponent() */
-  // unsubscribeComponent(manager: EntityManager, component: any) {
-  //   if (component.subid) {
-  //     manager.entityChanged.unsubscribe(component.subid);
-  //   }
-  // }
 }
 
 export const entityManagerProvider = new EntityManagerProvider();
