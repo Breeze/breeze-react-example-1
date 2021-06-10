@@ -9,7 +9,9 @@ import { CustomerList } from './CustomerList';
 import { Include  } from './utils/Include';
 import { SaveErrorDialog } from './SaveErrorDialog';
 import { SaveError } from 'breeze-client/src/entity-manager';
-import { ToastMessage } from './ToastMessage';
+import { ToastMessage, ToastMessageDialog } from './ToastMessageDialog';
+
+
 
 export const CustomerManager = () => {
   const entityManager = useContext(EntityManagerContext)!;
@@ -17,7 +19,7 @@ export const CustomerManager = () => {
   const [customers, setCustomers ] = useState([] as Customer[]);
   const [currentCust, setCurrentCust] = useState<Customer | null>(null);
   const [saveError, setSaveError] = useState<SaveError | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null);
 
   useEffect( () => {
     executeQuery(searchName);
@@ -62,10 +64,10 @@ export const CustomerManager = () => {
     try {
       const sr = await entityManager.saveChanges();
       if (sr.entities.length > 0) {
-        setToastMessage('Saved');
+        setToastMessage({ text: 'Saved'} );
       }
     } catch (e: any) {
-      setToastMessage('Save Failed');
+      setToastMessage( { text: 'Save Failed', type: 'Error'});
       setSaveError(e as SaveError);
       return;
     }
@@ -106,10 +108,7 @@ export const CustomerManager = () => {
             
       <SaveErrorDialog title="Save Errors encountered" saveError={saveError} onClose={() => setSaveError(null)} />
 
-      {/* <Toast onClose={() => setToast('')} show={toast!=''} delay={3000} autohide> 
-        <Toast.Header>{toast}</Toast.Header>
-      </Toast>                      */}
-      <ToastMessage onClose={() => setToastMessage(null)} message={toastMessage}/>
+      <ToastMessageDialog  message={toastMessage} onClose={() => setToastMessage(null)} />
     </div>
     
   );
