@@ -19,11 +19,12 @@ export const CustomerList = (props: {
             <td>{cust.city}</td>
             <td>{cust.orders.length} Orders</td>
             <td>{cust.entityAspect.entityState.name}</td>
+            <Include when={cust.entityAspect.entityState.isAddedModifiedOrDeleted()} >
             <td>
-              <Include when={cust.entityAspect.entityState.isAddedModifiedOrDeleted()} >
-                <button onClick={ () => undoCust(cust)}>Cancel Changes</button>
-              </Include>
-            </td>
+              <button onClick={ () => undoCust(cust)}>Cancel Changes</button>
+            </td>                
+            </Include>
+            
           </tr>)
         }
       </tbody>
