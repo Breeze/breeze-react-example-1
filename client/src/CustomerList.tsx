@@ -14,6 +14,7 @@ export const CustomerList = (props: {
       <tbody>
         {customers.map((cust) =>
           <tr key={cust.id} onClick={() => selectCust(cust)} className={currentCust === cust ? 'selected' : ''}>
+            <td>{cust.id}</td>
             <td>{cust.firstName} {cust.lastName}</td>
             <td>{cust.city}</td>
             <td>{cust.orders.length} Orders</td>
